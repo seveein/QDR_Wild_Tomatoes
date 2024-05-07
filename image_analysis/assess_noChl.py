@@ -7,6 +7,11 @@ import scipy.ndimage as ndimage
 from PIL import Image, ImageDraw
 import copy
 
+# HSV-thresholding of images 
+# Modify line 45 if lesions do not match observations
+# Severin Einspanier
+# 07.05.2024
+
 class InfectionPhenotype:
     def __init__(self, image):
         # Initialize class variables
@@ -39,8 +44,7 @@ class InfectionPhenotype:
         leaf_masked = 1 - leaf_masked
 
         # Determine infected pixels based on HSV values
-        infection_indices = np.nonzero(
-            (hsv[:, :, 0] < 48/255) | ((hsv[:,:,2] < .5) & (hsv[:,:,1] < .4)) | (hsv[:,:,2] < .4))
+        infection_indices = np.nonzero((hsv[:, :, 0] < 48/255) | ((hsv[:,:,2] < .5) & (hsv[:,:,1] < .4)) | (hsv[:,:,2] < .4))
         infected_pixels[infection_indices] = 0
         infected_pixels_masked = np.multiply(copy.deepcopy(infected_pixels), copy.deepcopy(leaf_masked))
         
